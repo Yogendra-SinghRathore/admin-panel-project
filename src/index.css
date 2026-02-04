@@ -1,32 +1,103 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body{
-  height: 100vh;
+body {
+  min-height: 100vh;
   width: 100%;
+  overflow: hidden;
 }
 
-.adminPage{
+.adminPage {
   display: flex;
   flex-direction: column;
 }
-.pageHead{
+
+.pageHead {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-.pageHead h2{
+
+.pageHead h2 {
   margin-bottom: 0;
 }
+
 .pageHead input {
   flex: 1;
 }
+
 .pageHead button {
   flex-shrink: 0;
 }
 
 
+
+.sideBar {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 20px;
+  justify-content: space-between;
+  height: 100vh;
+  width: 240px;
+  min-width: 240px;
+  border-right: 1px solid gainsboro;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  justify-content: space-between;
+}
+
+.mainContent {
+  margin-left: 240px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sideBarLinks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 5px;
+  margin-top: 30px;
+}
+
+
+
+.navLink {
+  text-decoration: none;
+  color: #344054;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.navLink:hover {
+  background-color: #f2f4f7;
+}
+
+.navLink.active {
+  background-color: #ecf3ff;
+  color: #465fff;
+}
