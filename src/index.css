@@ -1,0 +1,32 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  height: 100vh;
+  width: 100%;
+}
+
+.adminPage{
+  display: flex;
+  flex-direction: column;
+}
+.pageHead{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.pageHead h2{
+  margin-bottom: 0;
+}
+.pageHead input {
+  flex: 1;
+}
+.pageHead button {
+  flex-shrink: 0;
+}
+
+
