@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { UsersContext } from "./UsersContext";
 
 
-const USERS_API = "http://localhost:3001/users";
+const USERS_API = "https://admin-panel-backend-mzml.onrender.com/users";
 
 const UsersProvider = ({ children }) => {
 
