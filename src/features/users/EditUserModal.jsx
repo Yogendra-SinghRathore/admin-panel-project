@@ -1,4 +1,4 @@
-const EditUserModal = ({ user, handleEditChange, onSave, onCancel, errors }) => {
+const EditUserModal = ({ user, handleEditChange, onSave, onCancel, errors, isSavingUser }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -11,10 +11,9 @@ const EditUserModal = ({ user, handleEditChange, onSave, onCancel, errors }) => 
             <div className="modal fade show d-block" tabIndex="-1">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
-
                         {/* Header */}
                         <div className="modal-header">
-                            <h5 className="modal-title">Edit User</h5>
+                            <h5 className="modal-title">{user.id ? "Edit User" : "Add User"}</h5>
                             <button
                                 type="button"
                                 className="btn-close"
@@ -84,10 +83,10 @@ const EditUserModal = ({ user, handleEditChange, onSave, onCancel, errors }) => 
 
                             <button
                                 className="btn btn-success"
-                                disabled={Object.keys(errors).length > 0}
+                                disabled={Object.keys(errors).length > 0  || isSavingUser}
                                 onClick={() => onSave(user)}
                             >
-                                Save
+                                {isSavingUser ? user.id ? "Updating" : "Adding" : user.id ? "Update" : "Add" }
                             </button>
                         </div>
                     </div>

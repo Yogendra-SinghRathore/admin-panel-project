@@ -1,56 +1,24 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import UsersHeader from "./UsersHeader";
 import UsersTable from "./UsersTable";
 import EditUserModal from "./EditUserModal";
+import { useUsers } from "../users/context/UsersContext";
 
 const UsersPage = () => {
-    const [userData, setUserData] = useState([]);
-    const [error, setError] = useState(null);
+    const {
+        users,
+        loading,
+        error,
+        addUser,
+        updateUser,
+        deleteUser,
+        isSavingUser,
+        isDeletingUser,
+    } = useUsers();
+
     const [editingUser, setEditingUser] = useState(null);
     const [searchText, setSearchText] = useState("");
     const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(true);
-
-    const fetchUsers = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-
-            const response = await fetch("http://localhost:3001/users");
-
-            if (!response.ok) {
-                throw new Error("Faild to fetch users");
-            }
-
-            const data = await response.json();
-            setUserData(data);
-        } catch (error) {
-            setError(error.message);
-        }
-        finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchUsers();
-    }, [])
-
-
-    const addUser = () => {
-        const newUser = {
-            id: userData.length + 1,
-            first: "Parry",
-            last: "Eagle",
-            handle: "@gmail.com",
-        };
-        setUserData([...userData, newUser]);
-    };
-
-    const editUser = (user) => {
-        setEditingUser(user);
-        setErrors(validateUser(user));
-    };
 
     const validateUser = (user) => {
         const newErrors = {};
@@ -60,45 +28,62 @@ const UsersPage = () => {
         }
 
         if (!user.last || user.last.trim().length < 2) {
-            newErrors.last = "First name must be at least 2 characters";
+            newErrors.last = "Last name must be at least 2 characters";
         }
 
         if (!user.handle || !user.handle.includes("@")) {
             newErrors.handle = "Handle must include @";
         }
+
         return newErrors;
     };
 
-    const handleEditChange = (namee, value) => {
-        setEditingUser({ ...editingUser, [namee]: value });
-        setErrors(validateUser({ ...editingUser, [namee]: value }));
+    const handleSaveUser = async (user) => {
+
+        try {
+
+            if (user.id) {
+                await updateUser(user);
+            } else {
+                const {id, ...payload } = user;
+                await addUser(payload);
+            }
+            setEditingUser(null);
+        } catch (error) {
+            console.error(error);
+        }
     };
-    const updateUser = (updatedUser) => {
-        if (Object.keys(errors).length > 0) return;
-        setUserData(
-            userData.map((user) => (user.id === updatedUser.id ? updatedUser : user)),
-        );
-        setEditingUser(null);
+
+    const editUser = (user) => {
+        setEditingUser(user);
+        setErrors(validateUser(user));
+    };
+
+    const setUser = () => {
         setErrors({});
+        const newUser = {
+            id: null,
+            first: "",
+            last: "",
+            handle: "",
+        };
+        setEditingUser(newUser);
     };
 
-    const cancleEdit = () => setEditingUser(null);
-
-    const deleteUser = (id) => {
-        const confirmed = window.confirm(
-            "Are You Sure, You Want to delet this User !",
-        );
-        if (!confirmed) return;
-        const newUsers = userData.filter((user) => user.id !== id);
-        setUserData(newUsers);
+    const handleEditChange = (name, value) => {
+        const updatedUser = { ...editingUser, [name]: value };
+        setEditingUser(updatedUser);
+        setErrors(validateUser(updatedUser));
     };
 
-    const handleSearchTextChange = (enterdText) => {
-        setSearchText(enterdText);
+    const cancelEdit = () => setEditingUser(null);
+
+    const handleSearchTextChange = (enteredText) => {
+        setSearchText(enteredText);
     };
 
     const filteredUsers = useMemo(() => {
-        return userData.filter((user) => {
+        return users.filter((user) => {
             return (
                 user.id === Number(searchText) ||
                 user.first.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -106,30 +91,34 @@ const UsersPage = () => {
                 user.handle.toLowerCase().includes(searchText.toLowerCase())
             );
         });
-    }, [userData, searchText]);
+    }, [users, searchText]);
 
     return (
         <div className="adminPage">
             <UsersHeader
-                onAddUser={addUser}
+                setUser={setUser}
                 onSearchChange={handleSearchTextChange}
                 searchText={searchText}
             />
 
             {loading && (
-                <div className="text-center p-4 border">Loading users...</div>
+                <div className="text-center p-4 border">
+                    Loading users...
+                </div>
             )}
 
             {error && (
-                <div className="text-center p-4 border text-danger">{error}</div>
+                <div className="text-center p-4 border text-danger">
+                    {error}
+                </div>
             )}
-
 
             {!loading && !error && (
                 <UsersTable
                     data={filteredUsers}
                     onDeleteUser={deleteUser}
                     onEditUser={editUser}
+                    isDeletingUser={isDeletingUser}
                 />
             )}
 
@@ -137,9 +126,10 @@ const UsersPage = () => {
                 <EditUserModal
                     user={editingUser}
                     handleEditChange={handleEditChange}
-                    onSave={updateUser}
-                    onCancel={cancleEdit}
+                    onSave={handleSaveUser}
+                    onCancel={cancelEdit}
                     errors={errors}
+                    isSavingUser={isSavingUser}
                 />
             )}
         </div>

@@ -8,10 +8,10 @@ const SideBar = () => {
                 <h1 className='sideBarLogo'>Logo</h1>
                 <nav className='sideBarLinks'>
                     <NavLink to={"/dashboard"} className="navLink">
-                        <i class="ri-dashboard-line"></i> Dashboard
+                        <i className="ri-dashboard-horizontal-line"></i> Dashboard
                     </NavLink>
                     <NavLink to={"/users"} className="navLink">
-                        <i class="ri-user-3-line"></i> Users
+                        <i className="ri-user-3-line"></i> Users
                     </NavLink>
                 </nav>
             </div>
